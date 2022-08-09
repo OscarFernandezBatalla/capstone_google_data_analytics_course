@@ -1,61 +1,75 @@
+# Cyclistic Analysis
+
+Load libraries libraries:
+
 install.packages("tidyverse")
+```{r, error=FALSE, warning=FALSE, message=FALSE}
+
 library("tidyverse")
 library("lubridate")
-
-setwd("~/projectes_github/capstone_google_data_analytics_course")
-
+library(dplyr)
+library(knitr)
+```
 
 # load data
+```{r, error=FALSE, warning=FALSE, message=FALSE}
 df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>% 
   lapply(read_csv) %>%                                          
   bind_rows 
+```
  
 # general stats of the dataframe
+```{r}
 head(df)
 str(df)
 summary(df)
-
+```
 # consistency of each feature
-
+```{r}
 unique(df$rideable_type)
-sort(unique(df$start_station_name))
-
-sort(unique(df$start_station_id))
 unique(df$member_casual)
+```
 
 # column transformation type
+```{r}
 df$is_member <- df$member_casual == 'member'
 df$member_casual <- NULL
-
+```
 
 # data aggregation
+```{r}
 df$ride_length <- df$ended_at - df$started_at
 df$day_of_week <- wday(df$started_at)
 df$year <- year(df$started_at)
 df$month <- month(df$started_at)
 df$day <- day(df$started_at)
 df$hour <- hour(df$started_at)
-
+```
 
 # length for ride_id
+```{r}
 data.frame(names=df$ride_id,chr=apply(df,2,nchar)[,2])
 unique(nchar(as.character(df$ride_id)))
-
+```
 # search for duplicates in ride_id
+```{r}
 n_occur <- data.frame(table(df$ride_id))
 n_occur[n_occur$Freq > 1,]
+```
 
 # drop nulls per each column
+```{r}
 colSums(is.na(df))
 
 df <- subset(df, !is.na(df$start_station_id))
 df <- subset(df, !is.na(df$end_station_id))
 df <- subset(df, !is.na(df$start_station_name))
 df <- subset(df, !is.na(df$end_station_name))
-
 df <- subset(df, !is.na(df$end_lat))
 df <- subset(df, !is.na(df$end_lng))
+```
 
 # wrong data
-filter(df, ride_length <= 60)
+```{r}
 df <- subset(df, ride_length > 60)
+```
