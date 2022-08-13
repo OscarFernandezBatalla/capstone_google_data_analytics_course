@@ -1,6 +1,6 @@
 # Cyclistic Analysis
 
-Load libraries libraries:
+# Load libraries:
 
 install.packages("tidyverse")
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
@@ -11,32 +11,29 @@ library(dplyr)
 library(knitr)
 ```
 
-# load data
+## Load data files
+Here we load all the different csv into a single data frame.
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
 df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>% 
   lapply(read_csv) %>%                                          
   bind_rows 
 ```
  
-# general stats of the dataframe
+## General data stats
+First we want to see some general stats of the data.
 ```{r}
 head(df)
+```
+```{r}
 str(df)
+```
+
+```{r}
 summary(df)
 ```
-# consistency of each feature
-```{r}
-unique(df$rideable_type)
-unique(df$member_casual)
-```
 
-# column transformation type
-```{r}
-df$is_member <- df$member_casual == 'member'
-df$member_casual <- NULL
-```
-
-# data aggregation
+## Data aggregation
+To better understand the data and arrive to a conclusion, we add some new columns.
 ```{r}
 df$ride_length <- df$ended_at - df$started_at
 df$day_of_week <- wday(df$started_at)
@@ -46,21 +43,50 @@ df$day <- day(df$started_at)
 df$hour <- hour(df$started_at)
 ```
 
-# length for ride_id
+## Consistency of features
+For features like rideable_type and member_casual, we can check its unique values 
+to verify if there are some strange labels. But as we can see, the values seems correct.
+
 ```{r}
-data.frame(names=df$ride_id,chr=apply(df,2,nchar)[,2])
-unique(nchar(as.character(df$ride_id)))
+unique(df$rideable_type)
+unique(df$member_casual)
 ```
-# search for duplicates in ride_id
+As ride_id must be unique, we can check for duplicated value, but none was found.
 ```{r}
 n_occur <- data.frame(table(df$ride_id))
 n_occur[n_occur$Freq > 1,]
 ```
 
-# drop nulls per each column
+Check the length for ride_id, it is always 16.
+```{r}
+unique(nchar(as.character(df$ride_id)))
+```
+
+Wrong data as rides shorter than a minute have been dropped from the dataset.
+```{r}
+df <- subset(df, ride_length > 60)
+```
+
+## Column transformation type
+Features like member_casual can be represented as a boolean type, so we can map 
+this column an rename it.
+```{r}
+df$is_member <- df$member_casual == 'member'
+df$member_casual <- NULL
+```
+
+
+
+
+
+
+## Drop nulls per each column
+Null values:
 ```{r}
 colSums(is.na(df))
-
+```
+Dropping nulls found:
+```{r}
 df <- subset(df, !is.na(df$start_station_id))
 df <- subset(df, !is.na(df$end_station_id))
 df <- subset(df, !is.na(df$start_station_name))
@@ -69,7 +95,111 @@ df <- subset(df, !is.na(df$end_lat))
 df <- subset(df, !is.na(df$end_lng))
 ```
 
-# wrong data
+
+## Plots
+
+Subscription distribution
 ```{r}
-df <- subset(df, ride_length > 60)
+ggplot(df, aes(is_member, fill=is_member)) +
+    geom_bar() +
+    labs(x="Casuals and Members", y="Count", title="Subscription distribution")
+```
+
+
+```{r}
+df %>%
+  ggplot(aes(month, fill=is_member)) +
+    geom_bar() +
+    labs(x="Month", y="Rides", title="Rides per month")
+```
+
+```{r}
+df %>%
+  ggplot(aes(day_of_week, fill=is_member)) +
+    geom_bar() +
+    labs(x="Day of week", y="Rides", title="Rides per day of week")
+```
+
+
+```{r}
+df %>%
+    ggplot(aes(day, fill=is_member)) +
+    labs(x="Day", y="Rides", title="Rides per day") +
+    geom_bar()
+```
+
+```{r}
+df %>%
+    ggplot(aes(hour, fill=is_member)) +
+    labs(x="Hour", y="Count", title="Rides per hour") +
+    geom_bar()
+```
+
+
+Note: get top stations to promote an hypothetical subscription ad.
+```{r}
+stations_rides <- df %>% 
+  group_by(start_station_name) %>% 
+  summarize(rides_per_station = n()) %>%
+  arrange(desc(rides_per_station))
+
+head(stations_rides)
+```
+
+```{r}
+df %>% 
+  group_by(is_member) %>% 
+  summarise_at(vars(ride_length),funs(sum(.,na.rm=TRUE)))
+
+```
+
+
+```{r}
+df %>% 
+    group_by(is_member) %>% 
+    summarize(count = n())
+```
+
+
+```{r}
+ggplot(df, aes(rideable_type, fill=is_member)) +
+    geom_bar() +
+    labs(x="Ride type", y="Count", title="Number of ride type per subscription type")
+```
+
+
+```{r}
+df %>% 
+    group_by(rideable_type) %>% 
+    summarize(count = n())
+```
+
+
+```{r}
+ggplot(data=df) +
+  geom_bar(mapping = aes(x=is_member, y=ride_length), stat='identity') 
+```
+
+
+
+
+```{r}
+ggplot(data=df) +
+  geom_bar(mapping = aes(x=hour, y=ride_length, fill=is_member), stat='identity') + 
+  labs(x="Hour", y="Ride length", title="Ride length per hour")
+```
+
+
+
+
+```{r}
+df %>% 
+    group_by(is_member) %>% 
+    summarize(mean = mean(ride_length))
+```
+
+```{r}
+df %>% 
+    group_by(day_of_week) %>% 
+    summarize(mean = mean(ride_length))
 ```
