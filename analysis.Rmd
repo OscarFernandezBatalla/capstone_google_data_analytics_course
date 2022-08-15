@@ -1,8 +1,7 @@
 # Cyclistic Analysis
 
-# Load libraries:
-
-install.packages("tidyverse")
+## **Set up**
+Load of libraries:
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
 
 library("tidyverse")
@@ -11,7 +10,6 @@ library(dplyr)
 library(knitr)
 ```
 
-## Load data files
 Here we load all the different csv into a single data frame.
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
 df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>% 
@@ -19,20 +17,17 @@ df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>%
   bind_rows 
 ```
  
-## General data stats
+
 First we want to see some general stats of the data.
 ```{r}
 head(df)
-```
-```{r}
-str(df)
 ```
 
 ```{r}
 summary(df)
 ```
 
-## Data aggregation
+## **Data aggregation**
 To better understand the data and arrive to a conclusion, we add some new columns.
 ```{r}
 df$ride_length <- df$ended_at - df$started_at
@@ -43,7 +38,7 @@ df$day <- day(df$started_at)
 df$hour <- hour(df$started_at)
 ```
 
-## Consistency of features
+## **Consistency of features**
 For features like rideable_type and member_casual, we can check its unique values 
 to verify if there are some strange labels. But as we can see, the values seems correct.
 
@@ -67,7 +62,7 @@ Wrong data as rides shorter than a minute have been dropped from the dataset.
 df <- subset(df, ride_length > 60)
 ```
 
-## Column transformation type
+## **Type transformation**
 Features like member_casual can be represented as a boolean type, so we can map 
 this column an rename it.
 ```{r}
@@ -76,11 +71,7 @@ df$member_casual <- NULL
 ```
 
 
-
-
-
-
-## Drop nulls per each column
+## **Dealing with null values**
 Null values:
 ```{r}
 colSums(is.na(df))
@@ -96,15 +87,23 @@ df <- subset(df, !is.na(df$end_lng))
 ```
 
 
-## Plots
+## **Plots**
 
-Subscription distribution
+Comparative of members and casual riders. As we can see, there are slightly more subscribed clients than casuals. 
 ```{r}
 ggplot(df, aes(is_member, fill=is_member)) +
     geom_bar() +
     labs(x="Casuals and Members", y="Count", title="Subscription distribution")
 ```
 
+```{r}
+df %>% 
+    group_by(is_member) %>% 
+    summarize(count = n())
+```
+
+
+### Distribution of rides through time.
 
 ```{r}
 df %>%
@@ -112,6 +111,9 @@ df %>%
     geom_bar() +
     labs(x="Month", y="Rides", title="Rides per month")
 ```
+\
+
+The months with more activity are the ones from May to October, this could be due to the good weather. It is also important to notice that casual riders are much more sensible to this characteristic.
 
 ```{r}
 df %>%
@@ -119,6 +121,20 @@ df %>%
     geom_bar() +
     labs(x="Day of week", y="Rides", title="Rides per day of week")
 ```
+\
+
+As per the day of week, Saturdays and Sundays are slightly more active than work days. We can see that on work days, there are much more members than casual riders. This can give us the hypothesis that clients that need to ride bikes between Monday to Friday (work, school...) found more attractive the membership status. And casual riders are more concentrate through the weekend.  
+
+\ 
+
+In addition, We can observe that in this days, the average time of the ride is bigger that the other days. People spend more time cycling at weekend:
+
+```{r}
+df %>% 
+    group_by(day_of_week) %>% 
+    summarize(mean = mean(ride_length))
+```
+
 
 
 ```{r}
@@ -127,6 +143,9 @@ df %>%
     labs(x="Day", y="Rides", title="Rides per day") +
     geom_bar()
 ```
+\
+
+If we inspect the days of the month with more rides, we can see that more or less the distribution is stable through all the days except the 31, but that is because half of the months don't have this day.
 
 ```{r}
 df %>%
@@ -136,52 +155,39 @@ df %>%
 ```
 
 
-Note: get top stations to promote an hypothetical subscription ad.
+The hours with more activity are from 8AM to 7PM, and there are important spikes with a high presence of members around those two hours, coinciding with the rush hours from work or school.
+\
+
+We can increase our scope in an hypothetical ad campaign if we focus the resources on those hours, and we can check as well the top 10 used ride stations, where we could arrive to more potential clients:
 ```{r}
 stations_rides <- df %>% 
   group_by(start_station_name) %>% 
   summarize(rides_per_station = n()) %>%
   arrange(desc(rides_per_station))
 
-head(stations_rides)
+head(stations_rides, 10)
 ```
 
-```{r}
-df %>% 
-  group_by(is_member) %>% 
-  summarise_at(vars(ride_length),funs(sum(.,na.rm=TRUE)))
-
-```
-
-
-```{r}
-df %>% 
-    group_by(is_member) %>% 
-    summarize(count = n())
-```
-
+As we have two types of bicycles (plus the docked ones), we can plot the distribution:
 
 ```{r}
 ggplot(df, aes(rideable_type, fill=is_member)) +
     geom_bar() +
-    labs(x="Ride type", y="Count", title="Number of ride type per subscription type")
+    labs(x="Ride type", y="Count", title="Distribution of ride types")
 ```
+\
 
-
+Classic bikes are much more used than the electric ones. And in this table we can see that TODO
 ```{r}
 df %>% 
     group_by(rideable_type) %>% 
-    summarize(count = n())
+    summarize(mean = mean(ride_length))
 ```
 
 
-```{r}
-ggplot(data=df) +
-  geom_bar(mapping = aes(x=is_member, y=ride_length), stat='identity') 
-```
+\ 
 
-
-
+As for the length rides, casual riders tend to spend more time than members. Here we can see the difference for each hour:
 
 ```{r}
 ggplot(data=df) +
@@ -190,16 +196,17 @@ ggplot(data=df) +
 ```
 
 
+In general, members spend an average of 13 min for each ride and casual riders 28 min:
 
 
 ```{r}
-df %>% 
+df_avg_length_rides <- df %>% 
     group_by(is_member) %>% 
-    summarize(mean = mean(ride_length))
+    summarize(avg_ride_length_mins = mean(as.numeric(ride_length, units="mins"))) 
+
+df_avg_length_rides
 ```
 
-```{r}
-df %>% 
-    group_by(day_of_week) %>% 
-    summarize(mean = mean(ride_length))
-```
+
+
+
