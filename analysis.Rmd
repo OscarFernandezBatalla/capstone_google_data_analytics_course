@@ -1,6 +1,6 @@
-# Cyclistic Analysis
+# **Cyclistic Analysis**
 
-## **Set up**
+## Set up
 Load of libraries:
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
 
@@ -8,6 +8,8 @@ library("tidyverse")
 library("lubridate")
 library(dplyr)
 library(knitr)
+library(geosphere)
+library(mapview)
 ```
 
 Here we load all the different csv into a single data frame.
@@ -17,6 +19,22 @@ df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>%
   bind_rows 
 ```
  
+```{r}
+unique_gps_coords <- unique(df[c("start_lat", "start_lng")])
+```
+
+
+
+
+
+```{r}
+sub_sample <- df[sample(nrow(df), 100000), ]
+```
+
+
+
+
+
 
 First we want to see some general stats of the data.
 ```{r}
@@ -27,7 +45,7 @@ head(df)
 summary(df)
 ```
 
-## **Data aggregation**
+## Data aggregation
 To better understand the data and arrive to a conclusion, we add some new columns.
 ```{r}
 df$ride_length <- df$ended_at - df$started_at
@@ -36,9 +54,13 @@ df$year <- year(df$started_at)
 df$month <- month(df$started_at)
 df$day <- day(df$started_at)
 df$hour <- hour(df$started_at)
+
+df$ride_distance <- distGeo(matrix(c(df$start_lng, df$start_lat), ncol = 2), matrix(c(df$end_lng, df$end_lat), ncol = 2))
+df$ride_distance <- df$ride_distance / 1000
+
 ```
 
-## **Consistency of features**
+## Consistency of features
 For features like rideable_type and member_casual, we can check its unique values 
 to verify if there are some strange labels. But as we can see, the values seems correct.
 
@@ -62,7 +84,7 @@ Wrong data as rides shorter than a minute have been dropped from the dataset.
 df <- subset(df, ride_length > 60)
 ```
 
-## **Type transformation**
+## Type transformation
 Features like member_casual can be represented as a boolean type, so we can map 
 this column an rename it.
 ```{r}
@@ -71,7 +93,7 @@ df$member_casual <- NULL
 ```
 
 
-## **Dealing with null values**
+## Dealing with null values
 Null values:
 ```{r}
 colSums(is.na(df))
@@ -87,7 +109,7 @@ df <- subset(df, !is.na(df$end_lng))
 ```
 
 
-## **Plots**
+## Analysis through plots
 
 Comparative of members and casual riders. As we can see, there are slightly more subscribed clients than casuals. 
 ```{r}
@@ -100,6 +122,21 @@ ggplot(df, aes(is_member, fill=is_member)) +
 df %>% 
     group_by(is_member) %>% 
     summarize(count = n())
+```
+
+We can check which type of client do more kilometers:
+```{r}
+df %>% 
+    group_by(is_member) %>% 
+    summarize(mean = mean(ride_distance))
+```
+Both ride a similar distance, non members ride an average of 200m more. And those who choose to ride an electric bike do an extra 300m in average than the clients that stick with the classic bike:
+
+
+```{r}
+df %>% 
+    group_by(rideable_type) %>% 
+    summarize(mean = mean(ride_distance))
 ```
 
 
@@ -189,7 +226,7 @@ df %>%
 
 As for the length rides, casual riders tend to spend more time than members. Here we can see the difference for each hour:
 
-```{r}
+```{r, }
 ggplot(data=df) +
   geom_bar(mapping = aes(x=hour, y=ride_length, fill=is_member), stat='identity') + 
   labs(x="Hour", y="Ride length", title="Ride length per hour")
@@ -207,6 +244,29 @@ df_avg_length_rides <- df %>%
 df_avg_length_rides
 ```
 
+
+```{r}
+first_10 <- head(df, 10)
+last_10 <- tail(df, 10)
+
+mapview(first_10, xcol = "start_lng", ycol = "start_lat", crs = 4269, grid = FALSE)
+
+```
+Most frequent start and end station for member riders:
+```{r}
+df_members <- filter(df, is_member == TRUE)
+
+df_members$comb_station_names <- paste(df_members$start_station_name, " - " ,df_members$end_station_name)
+tail(names(sort(table(df_members$comb_station_names))), 5)
+```
+
+Most frequent start and end station for casual riders:
+```{r}
+df_casuals <- filter(df, is_member == FALSE)
+
+df_casuals$comb_station_names <- paste(df_casuals$start_station_name, " - " ,df_casuals$end_station_name)
+tail(names(sort(table(df_casuals$comb_station_names))), 5)
+```
 
 
 

@@ -366,9 +366,9 @@ pre code {
 
 
 <div id="cyclistic-analysis" class="section level1">
-<h1>Cyclistic Analysis</h1>
+<h1><strong>Cyclistic Analysis</strong></h1>
 <div id="set-up" class="section level2">
-<h2><strong>Set up</strong></h2>
+<h2>Set up</h2>
 <p>Load of libraries:</p>
 <pre class="r"><code>library(&quot;tidyverse&quot;)
 library(&quot;lubridate&quot;)
@@ -429,7 +429,7 @@ library(knitr)</code></pre>
 ##  NA&#39;s   :5374    NA&#39;s   :5374</code></pre>
 </div>
 <div id="data-aggregation" class="section level2">
-<h2><strong>Data aggregation</strong></h2>
+<h2>Data aggregation</h2>
 <p>To better understand the data and arrive to a conclusion, we add some
 new columns.</p>
 <pre class="r"><code>df$ride_length &lt;- df$ended_at - df$started_at
@@ -440,7 +440,7 @@ df$day &lt;- day(df$started_at)
 df$hour &lt;- hour(df$started_at)</code></pre>
 </div>
 <div id="consistency-of-features" class="section level2">
-<h2><strong>Consistency of features</strong></h2>
+<h2>Consistency of features</h2>
 <p>For features like rideable_type and member_casual, we can check its
 unique values to verify if there are some strange labels. But as we can
 see, the values seems correct.</p>
@@ -462,14 +462,14 @@ dataset.</p>
 <pre class="r"><code>df &lt;- subset(df, ride_length &gt; 60)</code></pre>
 </div>
 <div id="type-transformation" class="section level2">
-<h2><strong>Type transformation</strong></h2>
+<h2>Type transformation</h2>
 <p>Features like member_casual can be represented as a boolean type, so
 we can map this column an rename it.</p>
 <pre class="r"><code>df$is_member &lt;- df$member_casual == &#39;member&#39;
 df$member_casual &lt;- NULL</code></pre>
 </div>
 <div id="dealing-with-null-values" class="section level2">
-<h2><strong>Dealing with null values</strong></h2>
+<h2>Dealing with null values</h2>
 <p>Null values:</p>
 <pre class="r"><code>colSums(is.na(df))</code></pre>
 <pre><code>##            ride_id      rideable_type         started_at           ended_at 
@@ -490,8 +490,8 @@ df &lt;- subset(df, !is.na(df$end_station_name))
 df &lt;- subset(df, !is.na(df$end_lat))
 df &lt;- subset(df, !is.na(df$end_lng))</code></pre>
 </div>
-<div id="plots" class="section level2">
-<h2><strong>Plots</strong></h2>
+<div id="analysis-through-plots" class="section level2">
+<h2>Analysis through plots</h2>
 <p>Comparative of members and casual riders. As we can see, there are
 slightly more subscribed clients than casuals.</p>
 <pre class="r"><code>ggplot(df, aes(is_member, fill=is_member)) +
