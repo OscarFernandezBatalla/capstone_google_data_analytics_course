@@ -130,14 +130,6 @@ df %>%
     group_by(is_member) %>% 
     summarize(mean = mean(ride_distance))
 ```
-Both ride a similar distance, non members ride an average of 200m more. And those who choose to ride an electric bike do an extra 300m in average than the clients that stick with the classic bike:
-
-
-```{r}
-df %>% 
-    group_by(rideable_type) %>% 
-    summarize(mean = mean(ride_distance))
-```
 
 
 ### Distribution of rides through time.
@@ -214,17 +206,23 @@ ggplot(df, aes(rideable_type, fill=is_member)) +
 ```
 \
 
-Classic bikes are much more used than the electric ones. And in this table we can see that TODO
+Classic bikes are much more used than the electric ones. And in this table we can see the time spent on each type. Docked bikes are the most used, but this is because when they are docked the time still runs until they are parked to a proper station. Rides with classic bikes tend to be longer:
+
 ```{r}
 df %>% 
     group_by(rideable_type) %>% 
     summarize(mean = mean(ride_length))
 ```
 
+Rides with electric bikes are not only a 21% faster, as we can see in the following table, they do an average of an extra 400m compared with clients that stick with classic bikes:
 
-\ 
+```{r}
+df %>% 
+    group_by(rideable_type) %>% 
+    summarize(mean = mean(ride_distance))
+```
 
-As for the length rides, casual riders tend to spend more time than members. Here we can see the difference for each hour:
+As for the length of rides, casual riders tend to spend more time than members. Here we can see the difference for each hour:
 
 ```{r, }
 ggplot(data=df) +
@@ -244,15 +242,40 @@ df_avg_length_rides <- df %>%
 df_avg_length_rides
 ```
 
-
+Which are the favorite destinations of our clients? In the following map, we indicate the top 5 destination stations:
 ```{r}
-first_10 <- head(df, 10)
-last_10 <- tail(df, 10)
 
-mapview(first_10, xcol = "start_lng", ycol = "start_lat", crs = 4269, grid = FALSE)
+stations_rides <- df %>% 
+  group_by(end_station_name) %>% 
+  summarize(count = n()) %>%
+  arrange(desc(count))
+head(stations_rides, 10)
+
+first_10 <- head(stations_rides, 10)
+
 
 ```
-Most frequent start and end station for member riders:
+
+For a more visualize experience, we can plot each station in a map, mapping its importance with the size of dots:
+```{r}
+require(data.table)
+setDT(df); setDT(first_10) # convert to data.tables by reference
+
+# join to get GPS coord from the top end stations with the number of rides
+join <- df[first_10, mult = "first", on = "end_station_name", nomatch=0L] 
+join$rides_per_station <- first_10$count
+# selection of the features to plot
+df_end_stations <- select(join, c("end_station_name", "end_lng", "end_lat","rides_per_station"))
+# resize for point size on map
+df_end_stations$rides_per_station <- (df_end_stations$rides_per_station / max(df_end_stations$rides_per_station))*25
+# map plot
+mapview(df_end_stations, xcol = "end_lng", ycol = "end_lat", crs = 4269, 
+        cex = df_end_stations$rides_per_station, grid = FALSE, layer.name = 'Top destination stations')
+```
+It seems that the Navy Pier of Chicago is the most visited station.
+
+But we can also check the different behaviour between members and casual riders. 
+Here we see the most used pair of stations (start and end) for members: 
 ```{r}
 df_members <- filter(df, is_member == TRUE)
 
@@ -260,13 +283,15 @@ df_members$comb_station_names <- paste(df_members$start_station_name, " - " ,df_
 tail(names(sort(table(df_members$comb_station_names))), 5)
 ```
 
-Most frequent start and end station for casual riders:
+And the same with casual riders:
 ```{r}
 df_casuals <- filter(df, is_member == FALSE)
 
 df_casuals$comb_station_names <- paste(df_casuals$start_station_name, " - " ,df_casuals$end_station_name)
 tail(names(sort(table(df_casuals$comb_station_names))), 5)
 ```
+
+\
 
 
 
