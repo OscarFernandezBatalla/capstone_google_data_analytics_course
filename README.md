@@ -75,7 +75,72 @@ It is important to ensure that each data is represented with the correct type. A
 
 In order to analyze our clean data, a series of statistical calculations, plots and tables where computed. Each of this functions are thoroughly explained and detailed in order to understand how they were done and what data was used for. 
 
-/
+\
 
 The file containing all the analysis can be found [here](/analysis.html).
 
+## Share step
+
+This section presents the results obtained during the analysis phase.
+It is worth recalling the objective of this study, defined in the "ask" section: Understand the different behaviour between casual and member riders and answer how to approach a digital advertising campaign to encourage more customers to become members.
+
+### Member - casuals distribution
+First, we looked at the distribution of members and casuals. There are more members, so the dataset is a bit unbalanced, but it was enough to arrive to a clear result:
+
+PHOTO DISTRIBUTION CLIENTS
+
+### Rides per type of rider
+To understand the difference in behaviour between customers, a first query could be how many trips they make. This question has been divided into different time periods (number of trips per month, day of the week...) as well as the hours of the day of more activity according to the type of user.
+
+PHOTO MONTH
+
+Here is the distribution throughout the year. The busiest periods coincide with the good weather in the spring and summer months. The low presence of casual customers in the other months, corresponding to those with the worst weather, stands out. 
+
+The focus has also been placed on the number of trips during the days of the week. This was the result:
+
+PHOTO
+
+Two different behaviours can be seen according to casuals and members. Casual customers tend to take more trips on weekends, while for members it is the other way around. This behaviour suggests that members use the bicycle more on weekdays, which may be to go to work or school, while casuals enjoy it more in their free time (weekends).
+This hypothesis is further confirmed if we look at the distribution throughout the day:
+
+PHOTO
+
+A lot of activity is observed from 8AM to 7PM, also there are important peaks around those two hours by member riders, coinciding with peak start and end times for work or school. Casual cyclists have a more even distribution during the day and have more of a presence in the evening hours.
+
+### Time spent on rides
+Apart from the number of trips, it is also very interesting to see the time spent on each trip:
+
+PHOTO
+
+This graph shows something very relevant: casual cyclists spend much more time on their trips than members except during peak work and school hours, where members equal or exceed casual riders. The following table shows the average time by type of rider:
+
+PHOTO TABLE
+
+The casual cyclist's travel time is more than double that of members, totaling 28 and 13 minutes respectively. This behaviour can help to clearly differentiate between the two customer groups, and should be a characteristic to consider when designing the advertising campaign.
+
+### Type of ride
+ 
+In reference to the type of bicycle, the average time spent on each one and the distance traveled was calculated:
+
+PHOTO TABLE
+PHOTO TABLE
+
+Docked bikes are the most used, but this is because when they are docked the time still runs until they are parked to a proper station. Rides with classic bikes tend to be longer than the electric ones. They are not only a 21% faster, but they also do an average of an extra 400m compared with clients that stick with classic bikes.
+
+
+### Favourite destinations
+From de GPS data, we can check which are the favourite destinations:
+
+MAP PHOTO
+
+We can focus our ad campaign on that stations to reach to more clients.
+
+
+
+### Summary
+* Members are more active on weekdays, especially during peak work or school hours (8AM and 7PM).
+* The weather factor is strongly correlated with the number of trips taken, with the months between April and October being the busiest months. Specifically, casual riders are much more affected by this effect, their presence is much lower in the fall and winter months and vice versa.
+* Casual riders are more active on weekends and in the evening they have more presence than members.
+* The most visited destination is Navy Pier.
+* The average trip time for casual riders is more than twice that of members.
+* Classic bike trips are the most used, but electric bikes are 21% faster and travel an average of 400m more.
