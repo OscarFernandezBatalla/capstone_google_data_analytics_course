@@ -1,6 +1,15 @@
 # Capstone - Google Data Analytics Course
 This is the final project (capstone) of the Google Data Analytics certification that group all the key elements seen through the course. A case study is provided, where the fictional company (Cyclistic) needs to answer to a series of key business questions using data. In this imaginary situation, I am part of the marketing analytics team. My goal is to apply all the knowledge acquired in the Google Analytics course to find the answers to the questions posed. The introductory documentation can be read [here](/docs/case_study_definition.md).
 
+## Ask step
+
+For this study, we are trying to answer the following business questions:
+* How do annual members and casual riders use Cyclistic bikes differently?
+* Why would casual riders buy Cyclistic annual memberships?
+* How can Cyclistic use digital media to influence casual riders to become members?
+
+To answer this questions, we must identify the business task and consider the key stakeholders.
+The statement of the business task is clear, find the key differences between member and casual riders and determine how digital media could make an impact in transforming those who are not already members.
 
 ## Prepare step
 
@@ -35,6 +44,10 @@ Some new columns were created to better understand the business case:
 * **day**: Only the day number of the start of the ride.
 * **month**: Only the month number of the start of the ride.
 * **year**: Only the year number of the start of the ride.
+* **hour**: The hour at which the trip was made.
+* **ride_distance**: Total distance between start and end station in kilometers.
+
+
 
 ### Missing values
 As for the missing values, the features related with the station (start_station_name, start_station_id, end_station_name, end_station_id) have between 836018 and 892103 missing values, this is represents a 15% of the total set.
@@ -56,3 +69,13 @@ The rest of the data didn't present any other complication, and other serval tec
 ### Data transformation
 
 It is important to ensure that each data is represented with the correct type. As for the "member_casual" feature, the unique values are "member" and "casual". A better representation is to map this values to a boolean type: member = True, casual = False. This column was renamed as "is_member".
+
+
+## Analyze step
+
+In order to analyze our clean data, a series of statistical calculations, plots and tables where computed. Each of this functions are thoroughly explained and detailed in order to understand how they were done and what data was used for. 
+
+/
+
+The file containing all the analysis can be found [here](/analysis.html).
+
