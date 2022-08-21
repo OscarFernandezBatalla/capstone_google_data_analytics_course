@@ -75,7 +75,7 @@ It is important to ensure that each data is represented with the correct type. A
 
 In order to analyze our clean data, a series of statistical calculations, plots and tables where computed. Each of this functions are thoroughly explained and detailed in order to understand how they were done and what data was used for. 
 
-\
+/
 
 The file containing all the analysis can be found [here](/analysis.html).
 
@@ -87,30 +87,30 @@ It is worth recalling the objective of this study, defined in the "ask" section:
 ### Member - casuals distribution
 First, we looked at the distribution of members and casuals. There are more members, so the dataset is a bit unbalanced, but it was enough to arrive to a clear result:
 
-PHOTO DISTRIBUTION CLIENTS
+![members_casuals](./images/members_casuals.png)
 
 ### Rides per type of rider
 To understand the difference in behaviour between customers, a first query could be how many trips they make. This question has been divided into different time periods (number of trips per month, day of the week...) as well as the hours of the day of more activity according to the type of user.
 
-PHOTO MONTH
+![rides_month](./images/rides_month.png)
 
 Here is the distribution throughout the year. The busiest periods coincide with the good weather in the spring and summer months. The low presence of casual customers in the other months, corresponding to those with the worst weather, stands out. 
 
 The focus has also been placed on the number of trips during the days of the week. This was the result:
 
-PHOTO
+![rides_day_week](./images/rides_day_week.png)
 
 Two different behaviours can be seen according to casuals and members. Casual customers tend to take more trips on weekends, while for members it is the other way around. This behaviour suggests that members use the bicycle more on weekdays, which may be to go to work or school, while casuals enjoy it more in their free time (weekends).
 This hypothesis is further confirmed if we look at the distribution throughout the day:
 
-PHOTO
+![rides_hour](./images/rides_hour.png)
 
 A lot of activity is observed from 8AM to 7PM, also there are important peaks around those two hours by member riders, coinciding with peak start and end times for work or school. Casual cyclists have a more even distribution during the day and have more of a presence in the evening hours.
 
 ### Time spent on rides
 Apart from the number of trips, it is also very interesting to see the time spent on each trip:
 
-PHOTO
+![ride_length_hour](./images/ride_length_hour.png)
 
 This graph shows something very relevant: casual cyclists spend much more time on their trips than members except during peak work and school hours, where members equal or exceed casual riders. The following table shows the average time by type of rider:
 
@@ -131,7 +131,7 @@ Docked bikes are the most used, but this is because when they are docked the tim
 ### Favourite destinations
 From de GPS data, we can check which are the favourite destinations:
 
-MAP PHOTO
+![map](./images/map.PNG)
 
 We can focus our ad campaign on that stations to reach to more clients.
 
