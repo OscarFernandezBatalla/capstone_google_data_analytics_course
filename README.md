@@ -31,10 +31,8 @@ For a propper analysis, I followed the ROCCC guideline that ensures the data use
 One important step is to clean the data on those errors and missing values to ensure integrity and consistency. Some techniques were applied in order to find discrepancies and to expand the available data (data aggregation).  
 
 ### Data Integrity
-Importing the csv files into a relational database using SQL or as a dataframe in R offers the oportunity to check integrity easily. With this tools can be seen that some examples don't follow the rest of the sample: missing data, IDs too longs, GPS coordinates in different formats...
-/
+Importing the csv files into a relational database using SQL or as a dataframe in R offers the oportunity to check integrity easily. With this tools can be seen that some examples don't follow the rest of the sample: missing data, IDs too longs, GPS coordinates in different formats...\
 This problems must be solved in order to ensure data integrity and start working on the business task.
-/
 
 
 ### Data aggregation
@@ -50,20 +48,18 @@ Some new columns were created to better understand the business case:
 
 
 ### Missing values
-As for the missing values, the features related with the station (start_station_name, start_station_id, end_station_name, end_station_id) have between 836018 and 892103 missing values, this is represents a 15% of the total set.
-/
-"end_lat" and "end_lng" also present missing values: 5374 values, this is a total of 0.09%. 
-/
+As for the missing values, the features related with the station (start_station_name, start_station_id, end_station_name, end_station_id) have between 836018 and 892103 missing values, this is represents a 15% of the total set.\
+"end_lat" and "end_lng" also present missing values: 5374 values, this is a total of 0.09%.\
 As this data was unable to replace with other stadistical operations, it was dropped from the dataset.
 The rest of the available data remains completed.
 
 
 ### Wrong data
 
-Doing the cleaning phase of the dataset, some wrong data arrised. This errors can be found in the columns related with the dates of the trip. Some trips ended in a previous (or same) time than the start! A quick verification is to find negative and 0 values on the newly created "ride_length" column. 646 values were detected.
-/
-At this point we may ask, it is logical to have trips with a duration of a few seconds? For this case, a trip duration of less than a minute was dropped of the analysis. This criteria elevated the number of values to drop to 100420 (1.70%).
-/
+Doing the cleaning phase of the dataset, some wrong data arrised. This errors can be found in the columns related with the dates of the trip. Some trips ended in a previous (or same) time than the start! A quick verification is to find negative and 0 values on the newly created "ride_length" column. 646 values were detected.\
+\
+At this point we may ask, it is logical to have trips with a duration of a few seconds? For this case, a trip duration of less than a minute was dropped of the analysis. This criteria elevated the number of values to drop to 100420 (1.70%).\
+\
 The rest of the data didn't present any other complication, and other serval techniques where applied in order to check its integrity. For example, the "ride_id" column was used as a primary key, and it was checked that all of its values where unique and had a similar structure (alphanumerical values with 16 characters long).
 
 ### Data transformation
@@ -73,10 +69,8 @@ It is important to ensure that each data is represented with the correct type. A
 
 ## Analyze step
 
-In order to analyze our clean data, a series of statistical calculations, plots and tables where computed. Each of this functions are thoroughly explained and detailed in order to understand how they were done and what data was used for. 
-
-/
-
+In order to analyze our clean data, a series of statistical calculations, plots and tables where computed. Each of this functions are thoroughly explained and detailed in order to understand how they were done and what data was used for. \
+\
 The file containing all the analysis can be found [here](/analysis.html).
 
 ## Share step
