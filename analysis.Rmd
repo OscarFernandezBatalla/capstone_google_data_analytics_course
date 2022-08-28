@@ -1,3 +1,14 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+  always_allow_html: true
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
 # **Cyclistic Analysis**
 
 ## Set up
@@ -12,28 +23,12 @@ library(geosphere)
 library(mapview)
 ```
 
-Here we load all the different csv into a single data frame.
+Here we load all the different CSV into a single data frame.
 ```{r, error=FALSE, warning=FALSE, message=FALSE}
 df <- list.files(path = "./dataset", pattern = "*.csv", full.names = TRUE) %>% 
   lapply(read_csv) %>%                                          
   bind_rows 
 ```
- 
-```{r}
-unique_gps_coords <- unique(df[c("start_lat", "start_lng")])
-```
-
-
-
-
-
-```{r}
-sub_sample <- df[sample(nrow(df), 100000), ]
-```
-
-
-
-
 
 
 First we want to see some general stats of the data.
@@ -46,7 +41,7 @@ summary(df)
 ```
 
 ## Data aggregation
-To better understand the data and arrive to a conclusion, we add some new columns.
+To better understand the data and arrive at a conclusion, we add some new columns.
 ```{r}
 df$ride_length <- df$ended_at - df$started_at
 df$day_of_week <- wday(df$started_at)
@@ -61,14 +56,14 @@ df$ride_distance <- df$ride_distance / 1000
 ```
 
 ## Consistency of features
-For features like rideable_type and member_casual, we can check its unique values 
-to verify if there are some strange labels. But as we can see, the values seems correct.
+For features like rideable_type and member_casual, we can check their unique values 
+to verify if there are some strange labels. But as we can see, the values seem correct.
 
 ```{r}
 unique(df$rideable_type)
 unique(df$member_casual)
 ```
-As ride_id must be unique, we can check for duplicated value, but none was found.
+As ride_id must be unique, we can check for duplicated values, but none was found.
 ```{r}
 n_occur <- data.frame(table(df$ride_id))
 n_occur[n_occur$Freq > 1,]
@@ -86,7 +81,7 @@ df <- subset(df, ride_length > 60)
 
 ## Type transformation
 Features like member_casual can be represented as a boolean type, so we can map 
-this column an rename it.
+this column and rename it.
 ```{r}
 df$is_member <- df$member_casual == 'member'
 df$member_casual <- NULL
@@ -124,7 +119,7 @@ df %>%
     summarize(count = n())
 ```
 
-We can check which type of client do more kilometers:
+We can check which type of client does more kilometers:
 ```{r}
 df %>% 
     group_by(is_member) %>% 
@@ -142,7 +137,7 @@ df %>%
 ```
 \
 
-The months with more activity are the ones from May to October, this could be due to the good weather. It is also important to notice that casual riders are much more sensible to this characteristic.
+The months with more activity are the ones from May to October, this could be due to the good weather. It is also important to notice that casual riders are much more sensitive to this characteristic.
 
 ```{r}
 df %>%
@@ -152,11 +147,9 @@ df %>%
 ```
 \
 
-As per the day of week, Saturdays and Sundays are slightly more active than work days. We can see that on work days, there are much more members than casual riders. This can give us the hypothesis that clients that need to ride bikes between Monday to Friday (work, school...) found more attractive the membership status. And casual riders are more concentrate through the weekend.  
+As per the day of the week, Saturdays and Sundays are slightly more active than work days. We can see that on work days, there are many more members than casual riders. This can give us the hypothesis that clients that need to ride bikes between Monday to Friday (work, school...) found more attractive the membership status. And casual riders are more concentrated through the weekend.\
 
-\ 
-
-In addition, We can observe that in this days, the average time of the ride is bigger that the other days. People spend more time cycling at weekend:
+In addition, we can observe that on these days, the average time of the ride is bigger than the other days. People spend more time cycling at the weekend:
 
 ```{r}
 df %>% 
@@ -184,10 +177,10 @@ df %>%
 ```
 
 
-The hours with more activity are from 8AM to 7PM, and there are important spikes with a high presence of members around those two hours, coinciding with the rush hours from work or school.
+The hours with more activity are from 8 AM to 7 PM, and there are important spikes with a high presence of members around those two hours, coinciding with the rush hours from work or school.
 \
 
-We can increase our scope in an hypothetical ad campaign if we focus the resources on those hours, and we can check as well the top 10 used ride stations, where we could arrive to more potential clients:
+We can increase our scope in a hypothetical ad campaign if we focus the resources on those hours, and we can check as well the top 10 used ride stations, where we could arrive to more potential clients:
 ```{r}
 stations_rides <- df %>% 
   group_by(start_station_name) %>% 
@@ -206,7 +199,7 @@ ggplot(df, aes(rideable_type, fill=is_member)) +
 ```
 \
 
-Classic bikes are much more used than the electric ones. And in this table we can see the time spent on each type. Docked bikes are the most used, but this is because when they are docked the time still runs until they are parked to a proper station. Rides with classic bikes tend to be longer:
+Classic bikes are much more used than electric ones. And in this table, we can see the time spent on each type. Docked bikes are the most used, but this is because when they are docked the time still runs until they are parked at a proper station. Rides with classic bikes tend to be longer:
 
 ```{r}
 df %>% 
@@ -214,7 +207,7 @@ df %>%
     summarize(mean = mean(ride_length))
 ```
 
-Rides with electric bikes are not only a 21% faster, as we can see in the following table, they do an average of an extra 400m compared with clients that stick with classic bikes:
+Rides with electric bikes are not only 21% faster, as we can see in the following table, but they also do an average of an extra 400m compared with clients that stick with classic bikes:
 
 ```{r}
 df %>% 
@@ -242,7 +235,7 @@ df_avg_length_rides <- df %>%
 df_avg_length_rides
 ```
 
-Which are the favorite destinations of our clients? In the following map, we indicate the top 5 destination stations:
+Which are the favorite destinations of our clients? On the following map, we indicate the top 5 destination stations:
 ```{r}
 
 stations_rides <- df %>% 
@@ -256,7 +249,7 @@ first_10 <- head(stations_rides, 10)
 
 ```
 
-For a more visualize experience, we can plot each station in a map, mapping its importance with the size of dots:
+For a more visual experience, we can plot each station on a map, mapping its importance with the size of dots:
 ```{r}
 require(data.table)
 setDT(df); setDT(first_10) # convert to data.tables by reference
@@ -272,9 +265,9 @@ df_end_stations$rides_per_station <- (df_end_stations$rides_per_station / max(df
 mapview(df_end_stations, xcol = "end_lng", ycol = "end_lat", crs = 4269, 
         cex = df_end_stations$rides_per_station, grid = FALSE, layer.name = 'Top destination stations')
 ```
-It seems that the Navy Pier of Chicago is the most visited station.
+It seems that the Navy Pier is the most visited area of Chicago.
 
-But we can also check the different behaviour between members and casual riders. 
+But we can also check the different behavior between members and casual riders. 
 Here we see the most used pair of stations (start and end) for members: 
 ```{r}
 df_members <- filter(df, is_member == TRUE)
@@ -290,8 +283,6 @@ df_casuals <- filter(df, is_member == FALSE)
 df_casuals$comb_station_names <- paste(df_casuals$start_station_name, " - " ,df_casuals$end_station_name)
 tail(names(sort(table(df_casuals$comb_station_names))), 5)
 ```
-
-\
 
 
 

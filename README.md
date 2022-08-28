@@ -108,7 +108,7 @@ Apart from the number of trips, it is also very interesting to see the time spen
 
 This graph shows something very relevant: casual cyclists spend much more time on their trips than members except during peak work and school hours when members equal to or exceed casual riders. The following table shows the average time by type of rider:
 
-PHOTO TABLE
+![table_time_rider](./images/table_time_rider.PNG)
 
 The casual cyclist's travel time is more than double that of members, totaling 28 and 13 minutes respectively. This behavior can help to clearly differentiate between the two customer groups and should be a characteristic to consider when designing the advertising campaign.
 
@@ -116,8 +116,8 @@ The casual cyclist's travel time is more than double that of members, totaling 2
  
 In reference to the type of bicycle, the average time spent on each one and the distance traveled was calculated:
 
-PHOTO TABLE
-PHOTO TABLE
+![table_time_bike](./images/table_time_bike.PNG)
+![table_distance_bike](./images/table_distance_bike.PNG)
 
 Docked bikes are the most used, but this is because when they are docked the time still runs until they are parked to a proper station. Rides with classic bikes tend to be longer than the electric ones. They are not only a 21% faster, but they also do an average of an extra 400m compared with clients that stick with classic bikes.
 
