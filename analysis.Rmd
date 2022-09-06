@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   always_allow_html: true
 ---
 
@@ -215,16 +215,7 @@ df %>%
     summarize(mean = mean(ride_distance))
 ```
 
-As for the length of rides, casual riders tend to spend more time than members. Here we can see the difference for each hour:
-
-```{r, }
-ggplot(data=df) +
-  geom_bar(mapping = aes(x=hour, y=ride_length, fill=is_member), stat='identity') + 
-  labs(x="Hour", y="Ride length", title="Ride length per hour")
-```
-
-
-In general, members spend an average of 13 min for each ride and casual riders 28 min:
+As for the length of rides, members spend an average of 13 min for each ride and casual riders 28 min:
 
 
 ```{r}

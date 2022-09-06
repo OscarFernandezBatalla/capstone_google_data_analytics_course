@@ -71,7 +71,7 @@ It is important to ensure that data is represented with the correct type. As for
 
 In order to analyze our clean data, a series of statistical calculations, plots, and tables were computed. Each of these functions is thoroughly explained and detailed in order to understand how they were done and what data was used. \
 \
-The file containing all the analysis can be found [here](/analysis.html).
+The file containing all the analysis, in PDF and HTML format, can be found here: [PDF](/analysis.pdf) / [HTML](/analysis.html).
 
 ## Share step
 
